@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceFlow Dashboard</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class='bx bx-wallet-alt'></i>
+                    <span>FinanceFlow</span>
+                </div>
+                <button class="close-sidebar" id="closeSidebarBtn">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-target="view-dashboard">
+                    <i class='bx bx-grid-alt'></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-target="view-transactions">
+                    <i class='bx bx-transfer'></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-target="view-analytics">
+                    <i class='bx bx-pie-chart-alt-2'></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-target="view-cards">
+                    <i class='bx bx-credit-card-front'></i>
+                    <span>Cards</span>
+                </a>
+                <a href="#" class="nav-item" data-target="view-goals">
+                    <i class='bx bx-target-lock'></i>
+                    <span>Goals</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="#" class="nav-item" data-target="view-settings">
+                    <i class='bx bx-cog'></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggleBtn">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <h2>Overview</h2>
+                </div>
+
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <select id="currencySelector" class="currency-dropdown">
+                        <option value="INR">₹ INR</option>
+                        <option value="USD">$ USD</option>
+                    </select>
+                    <div class="notifications-wrapper" style="position: relative;">
+                        <button class="icon-btn" id="notificationBtn">
+                            <i class='bx bx-bell'></i>
+                            <span class="badge" id="notifBadge" style="display: none;"></span>
+                        </button>
+                        <div class="notifications-dropdown glass-panel" id="notifDropdown">
+                            <div class="notif-header">
+                                <h3>Notifications</h3>
+                                <button id="clearNotifs">Clear</button>
+                            </div>
+                            <div class="notif-list" id="notifList">
+                                <div class="empty-state" style="padding: 20px;">
+                                    <p>No new notifications</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-profile">
+                        <span class="user-name" style="margin-right: 10px; font-weight: 500;"></span>
+                        <img src="https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff" alt="User Profile">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+
+                <!-- Dashboard View -->
+                <section id="view-dashboard" class="view-section active">
+                    <!-- Summary Cards -->
+                    <div class="summary-cards">
+                        <div class="card balance-card fade-in">
+                            <div class="card-header">
+                                <span class="card-title">Total Balance</span>
+                                <i class='bx bx-dots-horizontal-rounded'></i>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="amount" id="totalBalanceAmt">$0.00</h3>
+                                <div class="trend positive">
+                                    <i class='bx bx-trending-up'></i>
+                                    <span>Calculated from data</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card fade-in fade-delay-1">
+                            <div class="card-header">
+                                <span class="card-title">Total Income</span>
+                                <div class="icon-wrapper income">
+                                    <i class='bx bx-arrow-to-bottom'></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="amount" id="totalIncomeAmt">$0.00</h3>
+                                <div class="trend positive">
+                                    <i class='bx bx-trending-up'></i>
+                                    <span>Real-time tracking</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card fade-in fade-delay-2">
+                            <div class="card-header">
+                                <span class="card-title">Total Expenses</span>
+                                <div class="icon-wrapper expense">
+                                    <i class='bx bx-arrow-from-bottom'></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="amount" id="totalExpenseAmt">$0.00</h3>
+                                <div class="trend negative">
+                                    <i class='bx bx-trending-down'></i>
+                                    <span>Filtered by category</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">Total Savings</span>
+                                <div class="icon-wrapper savings">
+                                    <i class='bx bx-wallet'></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="amount" id="totalSavingsAmt">$0.00</h3>
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="progress-text">0% of goals</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Summary Section -->
+                    <div class="section-header mt-20 fade-in">
+                        <h3>Monthly Summary <span id="currentMonthLabel" style="font-size: 14px; font-weight: 400; color: var(--text-muted);">(April 2026)</span></h3>
+                    </div>
+                    <div class="summary-cards" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 10px; margin-bottom: 30px;">
+                        <div class="card glass-panel fade-in" style="padding: 15px;">
+                            <span class="card-title" style="font-size: 13px; color: var(--text-muted);">Monthly Income</span>
+                            <h4 id="monthlyIncomeAmt" style="margin-top: 5px;">$0.00</h4>
+                        </div>
+                        <div class="card glass-panel fade-in fade-delay-1" style="padding: 15px;">
+                            <span class="card-title" style="font-size: 13px; color: var(--text-muted);">Monthly Expenses</span>
+                            <h4 id="monthlyExpenseAmt" style="margin-top: 5px;">$0.00</h4>
+                        </div>
+                        <div class="card glass-panel fade-in fade-delay-2" style="padding: 15px;">
+                            <span class="card-title" style="font-size: 13px; color: var(--text-muted);">Monthly Savings</span>
+                            <h4 id="monthlySavingsAmt" style="margin-top: 5px;">$0.00</h4>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <div class="glass-panel chart-panel fade-in">
+                            <h3>Monthly Spending</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-panel chart-panel fade-in fade-delay-1">
+                            <h3>Expense Categories</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lower Section -->
+                    <div class="dashboard-lower">
+                        <!-- Recent Transactions -->
+                        <div class="transactions-section glass-panel fade-in fade-delay-2">
+                            <div class="section-header">
+                                <h3>Recent Transactions</h3>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button class="btn-primary" id="openAddModalBtn"
+                                        style="padding: 6px 12px; font-size: 13px;">Add New <i
+                                            class='bx bx-plus'></i></button>
+                                    <a href="#" class="view-all">View All</a>
+                                </div>
+                            </div>
+                            <div class="transactions-list" id="transactionsList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Quick Transfer / Cards area -->
+                        <div class="side-panel">
+                            <div class="credit-card-widget">
+                                <div class="cc-header">
+                                    <i class='bx bxl-mastercard'></i>
+                                </div>
+                                <div class="cc-number">**** **** **** 0000</div>
+                                <div class="cc-footer">
+                                    <div class="cc-info">
+                                        <span>Card Holder</span>
+                                        <h4>User Name</h4>
+                                    </div>
+                                    <div class="cc-info">
+                                        <span>Expires</span>
+                                        <h4>MM/YY</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="insights-panel glass-panel mt-20">
+                                <h3>Smart Insights</h3>
+                                <div class="insights-list" id="insightsList">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <div class="quick-transfer glass-panel mt-20">
+                                <h3>Quick Transfer</h3>
+                                <div class="contacts" id="transferContacts">
+                                    <img src="https://ui-avatars.com/api/?name=Alice&background=10b981&color=fff"
+                                        alt="Alice" class="contact-avatar" data-name="Alice">
+                                    <img src="https://ui-avatars.com/api/?name=Bob&background=ef4444&color=fff"
+                                        alt="Bob" class="contact-avatar" data-name="Bob">
+                                    <img src="https://ui-avatars.com/api/?name=Charlie&background=f59e0b&color=fff"
+                                        alt="Charlie" class="contact-avatar" data-name="Charlie">
+                                    <div class="add-contact"><i class='bx bx-plus'></i></div>
+                                </div>
+                                <div class="transfer-input">
+                                    <input type="number" id="quickTransferAmount" placeholder="0.00">
+                                    <button class="btn-primary" id="quickTransferBtn">Send <i class='bx bx-send'></i></button>
+                                </div>
+                            </div>
+
+                            <!-- UPI Transfer Section -->
+                            <div class="upi-transfer glass-panel mt-20">
+                                <div class="section-header">
+                                    <h3>UPI Transfer</h3>
+                                    <i class='bx bx-mobile-alt' style="color: var(--primary);"></i>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="upiIdInput" placeholder="UPI ID (e.g. user@okaxis)" class="upi-input">
+                                </div>
+                                <div class="transfer-input mt-10">
+                                    <input type="number" id="upiAmountInput" placeholder="0.00">
+                                    <button class="btn-primary" id="upiPayBtn">Pay <i class='bx bx-bolt-circle'></i></button>
+                                </div>
+                                <div class="upi-footer">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo.png" alt="UPI Logo" style="height: 12px; filter: grayscale(1) opacity(0.5);">
+                                    <span>Secure Demo Payment</span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transactions View -->
+                <section id="view-transactions" class="view-section">
+                    <div class="glass-panel fade-in">
+                        <div class="section-header">
+                            <h3>Full Transaction History</h3>
+                            <button class="btn-primary" id="exportCsvBtn"
+                                style="background-color: var(--bg-surface-hover); border: 1px solid var(--border-color); color: var(--text-main);">
+                                <i class='bx bx-download'></i> Export CSV
+                            </button>
+                        </div>
+
+                        <!-- Filters Bar -->
+                        <div class="filters-bar"
+                            style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.02); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <div class="filter-group" style="flex: 1; min-width: 200px;">
+                                <div class="input-with-icon">
+                                    <i class='bx bx-search'></i>
+                                    <input type="text" id="txSearchInput" placeholder="Search by description...">
+                                </div>
+                            </div>
+                            <div class="filter-group" style="width: 150px;">
+                                <select id="txTypeFilter">
+                                    <option value="all">All Types</option>
+                                    <option value="income">Income</option>
+                                    <option value="expense">Expense</option>
+                                </select>
+                            </div>
+                            <div class="filter-group" style="width: 180px;">
+                                <select id="txCategoryFilter">
+                                    <option value="all">All Categories</option>
+                                    <option value="shopping">Shopping</option>
+                                    <option value="food">Food & Dining</option>
+                                    <option value="transport">Transportation</option>
+                                    <option value="bills">Bills & Utilities</option>
+                                    <option value="briefcase">Work/Salary</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="transactions-list" id="fullTransactionsList" style="margin-top: 20px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics View -->
+                <section id="view-analytics" class="view-section">
+                    <div class="glass-panel fade-in">
+                        <div class="section-header">
+                            <h3>Financial Analytics</h3>
+                        </div>
+                        <div class="charts-grid"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                            <div class="chart-container glass-panel" style="height: 350px; padding: 20px;">
+                                <h4>Income vs Expenses</h4>
+                                <canvas id="analyticsLineChart"></canvas>
+                            </div>
+                            <div class="chart-container glass-panel" style="height: 350px; padding: 20px;">
+                                <h4>Spending by Category</h4>
+                                <canvas id="analyticsPieChart"></canvas>
+                            </div>
+                            <div class="chart-container glass-panel" style="height: 350px; padding: 20px; grid-column: 1 / -1;">
+                                <h4>Balance Trend</h4>
+                                <canvas id="analyticsBalanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cards View -->
+                <section id="view-cards" class="view-section">
+                    <div class="glass-panel fade-in">
+                        <div class="section-header">
+                            <h3>Your Cards</h3>
+                            <button class="btn-primary" id="openAddCardModalBtn">Add Card <i class='bx bx-plus'></i></button>
+                        </div>
+                        <div class="cards-grid" id="cardsGrid"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Goals View -->
+                <section id="view-goals" class="view-section">
+                    <div class="glass-panel fade-in">
+                        <div class="section-header">
+                            <h3>Financial Goals</h3>
+                            <button class="btn-primary" id="openAddGoalModalBtn">Add Goal <i class='bx bx-plus'></i></button>
+                        </div>
+                        <div class="goals-grid" id="goalsGrid"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings View -->
+                <section id="view-settings" class="view-section">
+                    <div class="glass-panel fade-in">
+                        <div class="settings-container">
+                            <div class="profile-header"
+                                style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--border-color);">
+                                <div class="profile-avatar"
+                                    style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; font-size: 32px; color: white;">
+                                    <i class='bx bx-user'></i>
+                                </div>
+                                <div class="profile-info">
+                                    <h2 id="profileDisplayName" style="font-size: 24px; margin-bottom: 4px;">User Name</h2>
+                                    <p id="profileDisplayEmail" style="color: var(--text-muted);">user@example.com</p>
+                                    <span class="badge"
+                                        style="position: static; display: inline-block; margin-top: 8px; padding: 4px 10px; background: rgba(59, 130, 246, 0.1); color: var(--primary); border-radius: 20px; font-size: 12px; font-weight: 600;">Verified Account</span>
+                                </div>
+                            </div>
+
+                            <div class="settings-form-wrapper">
+                                <h3 style="margin-bottom: 20px;">Edit Profile</h3>
+                                <form id="settingsForm" class="auth-form" style="max-width: 500px;">
+                                    <div class="form-group">
+                                        <label>Full Name</label>
+                                        <input type="text" id="settingsName" placeholder="Your name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" id="settingsEmail" placeholder="Your email" disabled>
+                                        <small style="color: var(--text-muted);">Email cannot be changed.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Currency Preference</label>
+                                        <select id="settingsCurrency"
+                                            style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: white;">
+                                            <option value="USD">USD ($)</option>
+                                            <option value="EUR">EUR (€)</option>
+                                            <option value="GBP">GBP (£)</option>
+                                            <option value="INR">INR (₹)</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn-primary mt-20">Save Profile Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Add New Transaction</h3>
+                <span class="close" id="closeModalBtn">&times;</span>
+            </div>
+            <form id="expenseForm" class="expense-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="expType" required>
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="expAmount" step="0.01" placeholder="0.00" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="expDesc" placeholder="What was this for?" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="expCategory" required>
+                            <option value="shopping">Shopping</option>
+                            <option value="food">Food & Dining</option>
+                            <option value="transport">Transportation</option>
+                            <option value="bills">Bills & Utilities</option>
+                            <option value="briefcase">Work/Salary</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="expDate" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-full mt-10">Add Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Set New Goal</h3>
+                <span class="close" id="closeGoalModalBtn">&times;</span>
+            </div>
+            <form id="goalForm" class="expense-form">
+                <div class="form-group">
+                    <label>Goal Name</label>
+                    <input type="text" id="goalName" placeholder="e.g. New Laptop" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Amount</label>
+                        <input type="number" id="goalTarget" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Savings</label>
+                        <input type="number" id="goalInitial" step="0.01" placeholder="0.00" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Theme Color</label>
+                    <input type="color" id="goalColor" value="#3b82f6" style="height: 40px; padding: 2px;">
+                </div>
+                <button type="submit" class="btn-primary w-full mt-10">Create Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Card Modal -->
+    <div id="cardModal" class="modal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Add New Card</h3>
+                <span class="close" id="closeCardModalBtn">&times;</span>
+            </div>
+            <form id="cardForm" class="expense-form">
+                <div class="form-group">
+                    <label>Card Number (Last 4 digits)</label>
+                    <input type="text" id="cardNumber" maxlength="4" placeholder="4291" required>
+                </div>
+                <div class="form-group">
+                    <label>Card Holder Name</label>
+                    <input type="text" id="cardHolder" placeholder="John Doe" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Card Type</label>
+                        <select id="cardType">
+                            <option value="visa">Visa</option>
+                            <option value="mastercard">Mastercard</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary w-full mt-10">Add Card</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- UPI Loading Modal -->
+    <div id="upiLoadingModal" class="modal">
+        <div class="modal-content glass-panel text-center" style="padding: 40px; text-align: center;">
+            <div class="loader-container">
+                <div class="upi-spinner"></div>
+            </div>
+            <h3 style="margin-top: 20px;">Processing UPI Payment</h3>
+            <p style="color: var(--text-muted); margin-top: 8px;">Please do not close this window...</p>
+        </div>
+    </div>
+
+    <!-- UPI Success Modal -->
+    <div id="upiSuccessModal" class="modal">
+        <div class="modal-content glass-panel" style="max-width: 450px;">
+            <div class="success-header" style="text-align: center; padding: 20px 0;">
+                <div class="success-icon-wrapper">
+                    <i class='bx bx-check-circle'></i>
+                </div>
+                <h2 style="color: var(--success); margin-top: 15px;">Payment Successful!</h2>
+                <p style="color: var(--text-muted);">The amount has been transferred successfully.</p>
+            </div>
+            <div class="payment-details-card" style="background: rgba(255,255,255,0.03); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="color: var(--text-muted);">Receiver UPI ID</span>
+                    <span id="successUpiId" style="font-weight: 600;">user@okaxis</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="color: var(--text-muted);">Amount Paid</span>
+                    <span id="successAmount" style="font-weight: 700; color: var(--success);">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="color: var(--text-muted);">Transaction ID</span>
+                    <span id="successTxnId" style="font-family: monospace; font-size: 13px;">TXN123456789</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">Date & Time</span>
+                    <span id="successDateTime">27 Apr 2026, 10:45 AM</span>
+                </div>
+            </div>
+            <button class="btn-primary w-full" id="closeUpiSuccessBtn" style="justify-content: center; padding: 12px;">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- AI Advisor Chatbot -->
+    <div class="chatbot-widget">
+        <button class="chatbot-toggle" id="chatbotToggleBtn">
+            <i class='bx bx-bot'></i>
+        </button>
+        <div class="chatbot-panel glass-panel" id="chatbotPanel">
+            <div class="chatbot-header">
+                <div class="chatbot-title">
+                    <i class='bx bx-bot'></i>
+                    <span>AI Financial Advisor</span>
+                </div>
+                <button class="close-chatbot" id="closeChatbotBtn"><i class='bx bx-x'></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message ai-message">
+                    <div class="msg-bubble">Hello! I'm your AI Financial Advisor. How can I help you today?</div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chatbotInput" placeholder="Ask about your finances...">
+                <button id="chatbotSendBtn"><i class='bx bx-send'></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

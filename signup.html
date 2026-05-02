@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - FinanceFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Redirect if already logged in -->
+    <script>
+        if (localStorage.getItem("currentUser")) {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <div class="auth-container">
+        <div class="auth-card glass-panel fade-in">
+            <h2>Create Account</h2>
+            
+            <div id="signupError" class="form-error"></div>
+
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••" required autocomplete="new-password">
+                </div>
+                
+                <button type="submit" class="btn primary-btn">Sign Up</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const errorEl = document.getElementById('signupError');
+            errorEl.classList.remove('active');
+
+            // 1. Get and trim values
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const password = document.getElementById('signupPassword').value.trim();
+
+            if (!name || !email || !password) {
+                errorEl.textContent = "Please fill in all fields.";
+                errorEl.classList.add('active');
+                return;
+            }
+
+            console.log("Attempting signup for:", email);
+
+            // 2. Check for duplicate user
+            const userKey = 'user_' + email;
+            if (localStorage.getItem(userKey)) {
+                console.log("Signup failed. User already exists.");
+                errorEl.textContent = "An account with this email already exists.";
+                errorEl.classList.add('active');
+                return;
+            }
+
+            // 3. Save new user
+            const user = { name, email, password };
+            localStorage.setItem(userKey, JSON.stringify(user));
+            
+            console.log("Signup successful!");
+            alert("Account created successfully! Please log in.");
+            
+            // 4. Redirect to login
+            window.location.href = "login.html";
+        });
+    </script>
+
+</body>
+</html>
